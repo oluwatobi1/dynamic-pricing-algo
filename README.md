@@ -1,0 +1,2 @@
+# dynamic-pricing-algo
+DYNAMIC PRICING ALGORITHM FOR A RIDE-HAILING APP
