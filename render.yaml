@@ -5,7 +5,7 @@ services:
     name: dynamic-pricing
     runtime: python
     buildCommand: "./backend/build.sh"
-    startCommand: "python -m gunicorn dynamic_pricing_project.asgi:application -k uvicorn.workers.UvicornWorker"    
+    startCommand: "cd backend && python -m gunicorn dynamic_pricing_project.asgi:application -k uvicorn.workers.UvicornWorker"    
     envVars:
       - key: SECRET_KEY
         generateValue: true
