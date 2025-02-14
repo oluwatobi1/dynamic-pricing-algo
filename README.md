@@ -30,6 +30,9 @@ The Dynamic Pricing API is a Django-based service that calculates ride fares dyn
 - Swagger UI for API documentation.
 - Unit tests with Django's testing framework.
 
+### Live Demo
+See Live version hosted here https://dynamic-pricing-3all.onrender.com/
+
 
 ### Technology Stack
 Backend: Django, Django REST Framework
@@ -64,6 +67,11 @@ The API will be available at `http://127.0.0.1:8000/`
 #### Swagger API Documentation
 Once the application is running, access API documentation at:
 http://127.0.0.1:8000/swagger/
+
+Alternatively, you can access the API documentation at:
+https://dynamic-pricing-3all.onrender.com/swagger/
+
+
 ### How to run tests
 Test are in the `pricing/tests` directory. 
 - To run the tests, run the following command 
