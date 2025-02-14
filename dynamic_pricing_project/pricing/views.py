@@ -1,13 +1,10 @@
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from rest_framework.views import APIView, Response
-from .serializers import PriceSerializer
-from django.utils import timezone
-from utils import constants, utils
-from decimal import Decimal, ROUND_HALF_UP
+from .serializers import PriceRequestSerializer, PriceResponseSerializer
 from drf_yasg.utils import swagger_auto_schema
-
 from drf_yasg import openapi
+from .services import calculate_price
 
 
 # Create your views here.
@@ -46,7 +43,7 @@ class PricingView(APIView):
         '''
         This method calculates the fare based on the distance, traffic level, demand level and the current time.
         '''
-        serializer = PriceSerializer(data=request.GET)
+        serializer = PriceRequestSerializer(data=request.GET)
         if not serializer.is_valid():
             return Response(serializer.errors, status=400)
         
@@ -54,28 +51,6 @@ class PricingView(APIView):
         distance = validated_data["distance"]
         traffic_level = validated_data["traffic_level"]
         demand_level = validated_data["demand_level"]
-
-        traffic_multiplier = constants.TRAFFIC_RATE[traffic_level]
-        demand_multiplier = constants.DEMAND_RATE[demand_level]
-
-
-        current_time = timezone.now().time()
-        peak_hour_multiplier = 1
-        if utils.is_peak_hours(current_time):
-            peak_hour_multiplier = constants.PEAK_HOURS_RATE
-
-        total_fare = (constants.BASE_FARE + (distance * constants.PER_KM_RATE)) * (traffic_multiplier * demand_multiplier * peak_hour_multiplier)
-
-        # this is to ensure consistent rounding to 2 decimal places.. Cos: round() can 33.445 down to 33.44 instead of 33.45
-        total_fare = Decimal(str(total_fare)).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
-
-        return Response({
-            "base_fare": constants.BASE_FARE,
-            "distance_fare": distance * constants.PER_KM_RATE,
-            "traffic_multiplier": traffic_multiplier,
-            "demand_multiplier": demand_multiplier,
-            "total_fare": total_fare,
-            "peak_hour_multiplier": peak_hour_multiplier,
-            "request_time": current_time.strftime("%H:%M"),
-        }, status=200)
+        price_data = calculate_price(distance, demand_level, traffic_level)
+        return Response(price_data, status=200)
         

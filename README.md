@@ -66,5 +66,6 @@ Once the application is running, access API documentation at:
 http://127.0.0.1:8000/swagger/
 ### How to run tests
 Test are in the `pricing/tests` directory. 
-- To run the tests, run the following command
-- Run `python manage.py test`
+- To run the tests, run the following command 
+ - Navigate to the project directory(dynamic_pricing_project) ie. run `cd dynamic-pricing-algo/dynamic-pricing-project`
+- Run `python manage.py test  ./pricing/tests/**`

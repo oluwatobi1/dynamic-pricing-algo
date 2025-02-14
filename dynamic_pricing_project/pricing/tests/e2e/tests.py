@@ -4,13 +4,14 @@ from unittest.mock import patch
 from datetime import datetime
 from rest_framework import status
 from utils import constants
+from django.urls import reverse
 from decimal import Decimal, ROUND_HALF_UP
 # Create your tests here.
 
 class PricingAPITest(TestCase):
     def setUp(self):
         self.client = APIClient()
-        self.url = "/api/calculate_fare/"
+        self.url = reverse("calculate_fare")
 
         self.test_table = [
             {
@@ -70,8 +71,8 @@ class PricingAPITest(TestCase):
             },
         ]
 
-        
-    @patch('pricing.views.timezone')
+
+    @patch('pricing.services.timezone')
     def test_pricing_calculation_with_mocked_time(self, mock_timezone):
         '''
         Test the pricing calculation with controlled request times.
