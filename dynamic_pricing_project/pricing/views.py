@@ -4,6 +4,10 @@ from rest_framework.views import APIView, Response
 from .serializers import PriceSerializer
 from django.utils import timezone
 from utils import constants, utils
+from decimal import Decimal, ROUND_HALF_UP
+from drf_yasg.utils import swagger_auto_schema
+
+from drf_yasg import openapi
 
 
 # Create your views here.
@@ -16,7 +20,32 @@ def home(request):
 
 
 class PricingView(APIView):
+    '''
+    API Endpoint for calculating the fare for a ride based on the distance, traffic level, demand level and the peak time.
+    '''
+    @swagger_auto_schema(
+        manual_parameters=[
+            openapi.Parameter('distance', openapi.IN_QUERY, description="Distance in KM", type=openapi.TYPE_NUMBER),
+            openapi.Parameter('traffic_level', openapi.IN_QUERY, description="Traffic condition (low, normal, high)", type=openapi.TYPE_STRING),
+            openapi.Parameter('demand_level', openapi.IN_QUERY, description="Demand condition (normal, peak)", type=openapi.TYPE_STRING),
+        ],
+        responses={200: openapi.Response("Successful Response", schema=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'base_fare': openapi.Schema(type=openapi.TYPE_NUMBER),
+                'distance_fare': openapi.Schema(type=openapi.TYPE_NUMBER),
+                'traffic_multiplier': openapi.Schema(type=openapi.TYPE_NUMBER),
+                'demand_multiplier': openapi.Schema(type=openapi.TYPE_NUMBER),
+                'total_fare': openapi.Schema(type=openapi.TYPE_NUMBER),
+                "peak_hour_multiplier": openapi.Schema(type=openapi.TYPE_NUMBER),
+                "request_time":  openapi.Schema(type=openapi.TYPE_STRING),
+            },
+        ))},
+    )
     def get(self, request):
+        '''
+        This method calculates the fare based on the distance, traffic level, demand level and the current time.
+        '''
         serializer = PriceSerializer(data=request.GET)
         if not serializer.is_valid():
             return Response(serializer.errors, status=400)
@@ -35,8 +64,10 @@ class PricingView(APIView):
         if utils.is_peak_hours(current_time):
             peak_hour_multiplier = constants.PEAK_HOURS_RATE
 
-        total_fare = (constants.BASE_FARE + (distance * constants.PER_KM_RATE)) * \
-              (traffic_multiplier * demand_multiplier * peak_hour_multiplier)
+        total_fare = (constants.BASE_FARE + (distance * constants.PER_KM_RATE)) * (traffic_multiplier * demand_multiplier * peak_hour_multiplier)
+
+        # this is to ensure consistent rounding to 2 decimal places.. Cos: round() can 33.445 down to 33.44 instead of 33.45
+        total_fare = Decimal(str(total_fare)).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
 
         return Response({
             "base_fare": constants.BASE_FARE,
@@ -48,7 +79,3 @@ class PricingView(APIView):
             "request_time": current_time.strftime("%H:%M"),
         }, status=200)
         
-
-    def post(self, request):
-        return HttpResponse("Hello, world. You're at the pricing index.")
-
