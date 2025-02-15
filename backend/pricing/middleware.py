@@ -47,13 +47,11 @@ class TimezoneMiddleware:
             ip = ip_list.split(",")[0].strip() 
         else:
             ip = request.META.get("REMOTE_ADDR")
-        print("===ip init", ip, lon, lat)
         if lat and lon:
             timezone_str = self.__get_timezone_from_gps(float(lat), float(lon))
-            print("gps timezone ", lat, lon, timezone_str)
         else:
             lat, lon = self.__get_location_from_ip(ip)
-            timezone_str = self.__get_timezone_from_gps(lat, lon) if lat and lon else "UTC"
-        print("===ip timezone ", ip, lon, lat, timezone_str)
+            timezone_str = self.__get_timezone_from_gps(lat, lon) if lat and lon else "Africa/Lagos"
+        # print("===ip timezone ", ip, lon, lat, timezone_str)
         timezone.activate(pytz.timezone(timezone_str))
         request.user_timezone = timezone_str 

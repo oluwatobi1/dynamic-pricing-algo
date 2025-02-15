@@ -21,8 +21,6 @@ def calculate_price(distance, demand_level, traffic_level):
     demand_multiplier = constants.DEMAND_RATE[demand_level]
     # current_time = timezone.now().time()
     current_time = localtime(timezone=None).time()
-    print("local_time", current_time)
-
 
     peak_hour_multiplier = 1
     if utils.is_peak_hours(current_time):
