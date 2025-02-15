@@ -47,7 +47,7 @@ Containerization: Docker
 
 ### Setup instructions
 1. Clone this repository
-2. Navigate to the project directory(dynamic_pricing_project) ie. run `cd dynamic-pricing-algo/backend`
+2. Navigate to the project directory(backend) ie. run `cd dynamic-pricing-algo/backend`
 ### How to run the application
 
 #### Method 1: Running locally with virtual environment
@@ -75,5 +75,5 @@ https://dynamic-pricing-3all.onrender.com/swagger/
 ### How to run tests
 Test are in the `pricing/tests` directory. 
 - To run the tests, run the following command 
- - Navigate to the project directory(dynamic_pricing_project) ie. run `cd dynamic-pricing-algo/backend`
+ - Navigate to the project directory(backend) ie. run `cd dynamic-pricing-algo/backend`
 - Run `python manage.py test  ./pricing/tests/**`
