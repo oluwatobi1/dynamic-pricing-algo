@@ -43,18 +43,17 @@ class TimezoneMiddleware:
         lat = request.GET.get("latitude")
         lon = request.GET.get("longitude")
         ip_list = request.META.get("HTTP_X_FORWARDED_FOR", request.META.get("REMOTE_ADDR"))
-        print("ip_list", ip_list)
         if ip_list:
             ip = ip_list.split(",")[0].strip() 
         else:
             ip = request.META.get("REMOTE_ADDR")
-        print("ip init", ip, lon, lat)
+        print("===ip init", ip, lon, lat)
         if lat and lon:
             timezone_str = self.__get_timezone_from_gps(float(lat), float(lon))
             print("gps timezone ", lat, lon, timezone_str)
         else:
             lat, lon = self.__get_location_from_ip(ip)
             timezone_str = self.__get_timezone_from_gps(lat, lon) if lat and lon else "UTC"
-        print("ip timezone ", ip, lon, lat, timezone_str)
+        print("===ip timezone ", ip, lon, lat, timezone_str)
         timezone.activate(pytz.timezone(timezone_str))
         request.user_timezone = timezone_str 
