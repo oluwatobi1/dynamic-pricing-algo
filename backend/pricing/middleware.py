@@ -30,6 +30,7 @@ class TimezoneMiddleware:
         try:
             response = requests.get(f"https://ipinfo.io/{ip}/json")
             data = response.json()
+            
             if "loc" in data:
                 lat, lon = map(float, data["loc"].split(","))
                 return lat, lon
@@ -42,9 +43,10 @@ class TimezoneMiddleware:
         lat = request.GET.get("latitude")
         lon = request.GET.get("longitude")
         ip = request.META.get("HTTP_X_FORWARDED_FOR", request.META.get("REMOTE_ADDR"))
-
+        print("ip init", ip, lon, lat)
         if lat and lon:
             timezone_str = self.__get_timezone_from_gps(float(lat), float(lon))
+            print("gps timezone ", lat, lon, timezone_str)
         else:
             lat, lon = self.__get_location_from_ip(ip)
             timezone_str = self.__get_timezone_from_gps(lat, lon) if lat and lon else "UTC"
