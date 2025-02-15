@@ -1,5 +1,6 @@
 from utils import utils, constants
 from django.utils import timezone
+from django.utils.timezone import localtime
 from utils import constants, utils
 from decimal import Decimal, ROUND_HALF_UP
 
@@ -18,7 +19,9 @@ def calculate_price(distance, demand_level, traffic_level):
     '''
     traffic_multiplier = constants.TRAFFIC_RATE[traffic_level]
     demand_multiplier = constants.DEMAND_RATE[demand_level]
-    current_time = timezone.now().time()
+    # current_time = timezone.now().time()
+    current_time = localtime(timezone=None).time()
+    print("local_time", current_time)
 
 
     peak_hour_multiplier = 1

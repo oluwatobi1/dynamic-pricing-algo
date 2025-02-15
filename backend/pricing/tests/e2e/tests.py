@@ -73,7 +73,7 @@ class PricingAPITest(TestCase):
         ]
 
 
-    @patch('pricing.services.timezone')
+    @patch('pricing.services.localtime')
     def test_pricing_calculation_with_mocked_time(self, mock_timezone):
         '''
         Test the pricing calculation with controlled request times.
@@ -85,7 +85,7 @@ class PricingAPITest(TestCase):
             {"name":"Evening Peak Hour", "time": "18:45", "expected_peak_hour_multiplier": constants.PEAK_HOURS_RATE},
         ]
         for test_time in test_times:
-            mock_timezone.now.return_value.time.return_value = datetime.strptime(test_time["time"], "%H:%M").time()
+            mock_timezone.return_value.time.return_value = datetime.strptime(test_time["time"], "%H:%M").time()
             for test_case in self.test_table:
                 with self.subTest(msg=f'{test_case["name"]} - {test_time["name"]}'):
                     response = self.client.get(self.url, test_case["params"])

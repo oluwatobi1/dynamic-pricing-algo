@@ -22,9 +22,13 @@ class PricingView(APIView):
     '''
     @swagger_auto_schema(
         manual_parameters=[
-            openapi.Parameter('distance', openapi.IN_QUERY, description="Distance in KM", type=openapi.TYPE_NUMBER),
-            openapi.Parameter('traffic_level', openapi.IN_QUERY, description="Traffic condition (low, normal, high)", type=openapi.TYPE_STRING),
-            openapi.Parameter('demand_level', openapi.IN_QUERY, description="Demand condition (normal, peak)", type=openapi.TYPE_STRING),
+            openapi.Parameter('distance', openapi.IN_QUERY, description="Distance in KM", type=openapi.TYPE_NUMBER,required=True),
+            openapi.Parameter('traffic_level', openapi.IN_QUERY, description="Traffic condition (low, normal, high)", type=openapi.TYPE_STRING, required=True),
+            openapi.Parameter('demand_level', openapi.IN_QUERY, description="Demand condition (normal, peak)", type=openapi.TYPE_STRING, required=True),
+            # longitudes and latitudes as optional parameters for peak pricing based peak time of the day
+            openapi.Parameter('latitude', openapi.IN_QUERY, description="Starting Latitude", type=openapi.TYPE_NUMBER, default=6.516045),
+            openapi.Parameter('longitude', openapi.IN_QUERY, description="Starting Longitude", type=openapi.TYPE_NUMBER, default=3.340390),
+
         ],
         responses={200: openapi.Response("Successful Response", schema=openapi.Schema(
             type=openapi.TYPE_OBJECT,
