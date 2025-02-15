@@ -6,7 +6,8 @@ from rest_framework import status
 from utils import constants
 from django.urls import reverse
 from decimal import Decimal, ROUND_HALF_UP
-# Create your tests here.
+
+
 
 class PricingAPITest(TestCase):
     def setUp(self):
