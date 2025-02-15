@@ -42,7 +42,12 @@ class TimezoneMiddleware:
         """Detect and set the user's timezone."""
         lat = request.GET.get("latitude")
         lon = request.GET.get("longitude")
-        ip = request.META.get("HTTP_X_FORWARDED_FOR", request.META.get("REMOTE_ADDR"))
+        ip_list = request.META.get("HTTP_X_FORWARDED_FOR", request.META.get("REMOTE_ADDR"))
+        print("ip_list", ip_list)
+        if ip_list:
+            ip = ip_list.split(",")[0].strip() 
+        else:
+            ip = request.META.get("REMOTE_ADDR")
         print("ip init", ip, lon, lat)
         if lat and lon:
             timezone_str = self.__get_timezone_from_gps(float(lat), float(lon))
